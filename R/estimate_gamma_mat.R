@@ -12,11 +12,13 @@ estimate_gamma_j <- function(data, folds, id, x, g, a_j, a_m1, y_m1, sbar_m1, gv
 
 estimate_gamma_mat <- function(data, folds, id, x, g, all_a, all_y, all_s, gval, lrnr, slim = FALSE) {
   tt <- length(all_a)
+  t0 <- length(all_s)
   gamma_js <- map(1:tt, function(t) {
     if (t == 1) {
       estimate_gamma_j(data, folds, id, x, g, all_a[1], NULL, NULL, NULL, gval, t, lrnr)
     } else {
-      estimate_gamma_j(data, folds, id, x, g, all_a[t], all_a[t-1], all_y[t-1], all_s[1:(t-1)], gval, t, lrnr)
+      correct_s_index = min(t0,t-1)
+      estimate_gamma_j(data, folds, id, x, g, all_a[t], all_a[t-1], all_y[t-1], all_s[1:correct_s_index], gval, t, lrnr)
     }
   })
 
